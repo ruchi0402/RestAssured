@@ -7,19 +7,21 @@ import org.testng.annotations.Test;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import utils.CommonConstant;
 import utils.TestUtil;
 
 public class AddProduct {
 	
 	@DataProvider
 	public Object[][] getProductData() throws Exception {
+	
 		Object data[][] = TestUtil.getTestData("Sheet1");
 		return data;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Test(priority = 1, dataProvider = "getProductData")
-	public void testcaseone(String availability, String categoryId, String color , String created, String description, String discount, String material,String name, String price,String updateOn,String warranty ) {	
+	public void addProductTest(String availability, String categoryId, String color , String created, String description, String discount, String material,String name, String price,String updateOn,String warranty ) {	
 	RequestSpecification request = RestAssured.given();
 	JSONObject requestParams = new JSONObject();
 	requestParams.put("availability", availability); 
@@ -35,9 +37,7 @@ public class AddProduct {
 	requestParams.put("warranty",  warranty.charAt(0));
 	request.header("Content-Type", "application/json");
 	request.body(requestParams.toJSONString());
-	System.out.println(requestParams.toJSONString());
-	Response response = request.post("http://okmry52647dns.eastus.cloudapp.azure.com:8089/rest/api/product/");	 
-	System.out.println("Response body: " + response.body().asString());
+	Response response = request.post(CommonConstant.postURL);	 
 	int statusCode = response.getStatusCode();
 	String responseBody=response.getBody().asString();
 	Assert.assertEquals(statusCode, 201);

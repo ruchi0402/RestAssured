@@ -10,7 +10,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 
 public class TestUtil {
 
-	public static String TESTDATA_SHEET_PATH = "C:\\Users\\Admin\\Desktop\\SDET\\DataSheet.xls";
+	public static String TESTDATA_SHEET_PATH = System.getProperty("user.dir") + "\\DataSheet.xls";
 
 	public static Workbook book;
 	public static Sheet sheet;
