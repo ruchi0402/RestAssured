@@ -2,38 +2,46 @@ package testcases;
 
 import org.json.simple.JSONObject;
 import org.testng.Assert;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import utils.TestUtil;
 
 public class AddProduct {
 	
+	@DataProvider
+	public Object[][] getProductData() throws Exception {
+		Object data[][] = TestUtil.getTestData("Sheet1");
+		return data;
+	}
+	
 	@SuppressWarnings("unchecked")
-	@Test
-	public void testcaseone()
-	{
+	@Test(priority = 1, dataProvider = "getProductData")
+	public void testcaseone(String availability, String categoryId, String color , String created, String description, String discount, String material,String name, String price,String updateOn,String warranty ) {	
 	RequestSpecification request = RestAssured.given();
-	request.header("Content-Type", "application/json");
 	JSONObject requestParams = new JSONObject();
-	requestParams.put("availability", "true"); 
-	requestParams.put("categoryId", 4);
-	requestParams.put("color", "white");
-	requestParams.put("createdOn", "2019-08-01");
-	requestParams.put("description", "youll never leave");
-	requestParams.put("discount", 10);
-	requestParams.put("materialDescription", "soft cotton, sandal Wood");
-	requestParams.put("name", "Tacoma kingbed");
-	requestParams.put("price", 24000);
-	requestParams.put("updateOn",  "2019-09-01");
-	requestParams.put("warranty",  10);
+	requestParams.put("availability", availability); 
+	requestParams.put("categoryId", categoryId.charAt(0));
+	requestParams.put("color", color);
+	requestParams.put("createdOn", created);
+	requestParams.put("description", description);
+	requestParams.put("discount", discount.charAt(0));
+	requestParams.put("materialDescription", material);
+	requestParams.put("name", name);
+	requestParams.put("price", price.charAt(0));
+	requestParams.put("updateOn",  updateOn);
+	requestParams.put("warranty",  warranty.charAt(0));
+	request.header("Content-Type", "application/json");
 	request.body(requestParams.toJSONString());
+	System.out.println(requestParams.toJSONString());
 	Response response = request.post("http://okmry52647dns.eastus.cloudapp.azure.com:8089/rest/api/product/");	 
-	//System.out.println("Response body: " + response.body().asString());
+	System.out.println("Response body: " + response.body().asString());
 	int statusCode = response.getStatusCode();
+	String responseBody=response.getBody().asString();
 	Assert.assertEquals(statusCode, 201);
-	
-	
+	Assert.assertEquals(responseBody.contains("Tacoma kingbed"), true);
 	}	
 
 }
